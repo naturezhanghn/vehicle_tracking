@@ -1,0 +1,49 @@
+FROM reg.supremind.info/algorithmteam/dockerhub/atom-ngcpytorch:1912-py3
+LABEL maintainer = "nihuajian@supremind.com" 
+
+RUN export WORKSPACE_ROOT=/workspace && mkdir -p ${WORKSPACE_ROOT}
+
+RUN pip install torchcontrib pandas \
+                            opencv_python \
+                            yacs seaborn \
+                            pytorch_ignite \
+                            matplotlib \
+                            numpy \
+                            Pillow \
+                            pretrainedmodels \
+                            protobuf \
+                            pycocotools \
+                            rfconv \
+                            scikit_learn \
+                            tensorboardX \
+                            Python-Deprecated \
+                            scikit-build \
+                            -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+RUN apt-get update && apt-get install -y \
+                            build-essential \
+                            cmake \
+                            nasm \
+                            pkg-config \
+                            automake \
+                            libtool \
+                            openssh-server \
+                            gdb \
+                            rsync \
+                            git \
+                            vim \
+                            wget \
+                            libboost-all-dev \
+                            libopencv-dev \
+                            vnc4server \
+                            libprotobuf-dev \
+                            protobuf-compiler \
+                            --no-install-recommends
+
+RUN cd /workspace && git clone https://github.com/pybind/pybind11.git
+
+RUN cd pybind11 && git checkout -b stable && mkdir build && cd build && cmake .. && make all -j4 && make install
+
+ENV LC_ALL=C.UTF-8
+LABEL com.supremind.os = "ubuntu-18.04"
+LABEL com.supremind.type = "traffictracking"
